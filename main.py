@@ -1,35 +1,36 @@
 import youtube_dl
+from ydlGUI import MyLogger
 from PyQt5.QtWidgets import QTableWidgetItem
-# from window import MyLogger
 
 proxy = ''
 ydl_opts = {}
 file_count = 0
 format_code, extension, resolution, format_note, file_size = [], [], [], [], []
 ydl = youtube_dl.YoutubeDL(ydl_opts)
-video = {}
+video_info = {}
 
 # 'https://www.youtube.com/watch?v=gOLlY7SV6gE'
 def RetrieveInfo(w):         # retrieve video information
-    global video, ydl, proxy
+    global video_info, ydl, proxy
     proxy = w.PxyEdit.text()
     ydl_opts = {'outtmpl': '%(title)s%(ext)s',
                 'proxy': proxy,
                 'socket_timeout': 20,
                 'prefer_ffmpeg': True,
-                # 'logger': MyLogger()
+                'nocheckcertificate': True,
+                'logger': MyLogger(w)
                 }
     ydl = youtube_dl.YoutubeDL(ydl_opts)
     url = w.AddrEdit.text()
 
     try:
-        video = ydl.extract_info(url, download=False)
+        video_info = ydl.extract_info(url, download=False)
     except Exception as e:
         pass
 
     # sort information
     global file_count, format_code, extension, resolution, format_note, file_size
-    formats = video.get('formats')
+    formats = video_info.get('formats')
     if formats is not None:
         file_count = len(formats)
         for f in formats:

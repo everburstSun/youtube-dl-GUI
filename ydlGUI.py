@@ -21,12 +21,12 @@ class MyWindow(Ui_Form, QtWidgets.QWidget):
         self.show()
 
     # function that display output at the textBrowser
-    # def normalOutputWritten(self, text):
-    #     cursor = self.textBrowser.textCursor()
-    #     cursor.movePosition(QtGui.QTextCursor.End)
-    #     cursor.insertText(text)
-    #     self.textBrowser.setTextCursor(cursor)
-    #     self.textBrowser.ensureCursorVisible()
+    def normalOutputWritten(self, text):
+        cursor = self.textBrowser.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.insertText(text)
+        self.textBrowser.setTextCursor(cursor)
+        self.textBrowser.ensureCursorVisible()
 
     def showinfo(self):
         main.RetrieveInfo(self)
@@ -36,20 +36,23 @@ class MyWindow(Ui_Form, QtWidgets.QWidget):
     def download(self):
         main.ydl.params = {'format': self.SeleEdit.text()}
         try:
-            main.ydl.process_video_result(main.video)
+            main.ydl.process_video_result(main.video_info)
         except Exception as e:
             pass
 
-# youtube-dl uses logger to redirect output
-# class MyLogger():
-#     def debug(self, msg, w):
-#         w.normalOutputWritten(w, msg)
-#
-#     def warning(self, msg, w):
-#         w.normalOutputWritten(w, msg)
-#
-#     def error(self, msg, w):
-#         w.normalOutputWritten(w, msg)
+
+class MyLogger:
+    def __init__(self, c):
+        self.cls = c
+
+    def debug(self, msg):
+        self.cls.normalOutputWritten(msg)
+
+    def warning(self, msg):
+        self.cls.normalOutputWritten(msg)
+
+    def error(self, msg):
+        self.cls.normalOutputWritten(msg)
 
 
 if __name__ == '__main__':
